@@ -1,15 +1,15 @@
-name: Upwork-Sniper-8min
+ame: Upwork-Sniper-8min
 
 on:
   schedule:
-    - cron: '*/8 * * * *'  # يعمل كل 8 دقائق
-  workflow_dispatch:
+    - cron: '*/8 * * * *' # يعمل تلقائياً كل 8 دقائق
+  workflow_dispatch:      # يتيح لك التشغيل اليدوي للتجربة
 
 jobs:
   run-sniper:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: write     # للسماح للبوت بتحديث ملف last_job.txt
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -17,7 +17,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12' # نفس النسخة التي استخدمتها في جهازك
+          python-version: '3.12'
 
       - name: Install dependencies
         run: |
@@ -28,4 +28,5 @@ jobs:
           MY_TOKEN: ${{ secrets.MY_TOKEN }}
           MY_RSS: ${{ secrets.MY_RSS }}
           MY_CHAT_ID: ${{ secrets.MY_CHAT_ID }}
+          PYTHONPATH: .
         run: python main.py
