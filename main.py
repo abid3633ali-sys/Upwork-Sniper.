@@ -1,23 +1,27 @@
 import requests
 
-# بيانات الربط الصحيحة
+# بياناتك الصحيحة
 TOKEN = "8343143091:AAHua7xDAYqwIExQYn3p1130W6rrbaRed7E"
 CHAT_ID = "7665460040"
 
-def test_bot():
+def send_test():
     url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+    # الرسالة التي طلبتها
+    text = "مرحبا يا علي، أنا أعمل بكفاءة قوية من داخل GitHub 🚀"
+    
     payload = {
         "chat_id": CHAT_ID,
-        "text": "مرحبا انا اعمل جيداا 🚀\nلقد نجح الربط بين GitHub وتليجرام!"
+        "text": text
     }
     
-    print("جاري الإرسال...")
+    print("⏳ جاري محاولة إرسال الرسالة من خوادم GitHub...")
     response = requests.post(url, data=payload)
     
     if response.status_code == 200:
-        print("✅ وصلت الرسالة! تحقق من هاتفك.")
+        print("✅ نجحت العملية! تفقد هاتفك الآن.")
     else:
-        print(f"❌ خطأ {response.status_code}: {response.text}")
+        print(f"❌ فشل الإرسال من GitHub. كود الخطأ: {response.status_code}")
+        print(f"السبب: {response.text}")
 
 if __name__ == "__main__":
-    test_bot()
+    send_test()
