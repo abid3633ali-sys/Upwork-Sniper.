@@ -2,26 +2,25 @@ name: Upwork-Sniper-8min
 
 on:
   schedule:
-    - cron: '*/8 * * * *' # يعمل كل 8 دقائق تلقائياً
-  workflow_dispatch: # يسمح لك بتشغيله يدوياً
+    - cron: '*/8 * * * *'
+  workflow_dispatch:
 
 jobs:
   run-sniper:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # إذن ضروري للكتابة في ملف الذاكرة
+      contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4 # نسخة حديثة ومستقرة
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # نسخة v4 موثقة بالكامل
 
       - name: Set up Python
-        uses: actions/setup-python@v5 # نسخة حديثة ومستقرة
+        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fbb58469 # نسخة v5 موثقة بالكامل
         with:
           python-version: '3.9'
 
       - name: Install dependencies
-        run: |
-          pip install feedparser requests
+        run: pip install feedparser requests
 
       - name: Run Sniper
         run: python main.py
