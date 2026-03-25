@@ -2,7 +2,7 @@ name: Upwork-Sniper-8min
 
 on:
   schedule:
-    - cron: '*/8 * * * *'
+    - cron: '*/8 * * * *'  # يعمل كل 8 دقائق
   workflow_dispatch:
 
 jobs:
@@ -17,10 +17,15 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.12' # نفس النسخة التي استخدمتها في جهازك
 
       - name: Install dependencies
-        run: pip install feedparser requests
+        run: |
+          pip install feedparser requests pyarmor
 
       - name: Run Sniper
+        env:
+          MY_TOKEN: ${{ secrets.MY_TOKEN }}
+          MY_RSS: ${{ secrets.MY_RSS }}
+          MY_CHAT_ID: ${{ secrets.MY_CHAT_ID }}
         run: python main.py
