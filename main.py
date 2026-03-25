@@ -1,38 +1,35 @@
 import feedparser
 import requests
-import time
+import os
 
-# بيانات الربط الخاصة بك
-TOKEN = "8343143091:AAHuA7xDAyqwIExQYn3p1l3OW6rrbaRed7E"
+# بياناتك
+TOKEN = "8343143091:AAHua7xDAYqwIExQYn3p1130W6rrbaRed7E"
 CHAT_ID = "7665460040"
-
-# رابط البحث المخصص (Long form to Shorts)
 RSS_URL = "https://www.upwork.com/ab/feed/jobs/rss?q=Long+form+to+Shorts&sort=recency"
+LAST_JOB_FILE = "last_job.txt"
 
-def send_to_telegram(title, link, description):
+def send_to_telegram(title, link):
     url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
-    message = f"🎯 **صيد جديد على Upwork!**\n\n📌 **الوظيفة:** {title}\n\n🔗 **رابط التقديم:**\n{link}"
+    message = f"🎯 **صيد جديد على Upwork!**\n\n📌 {title}\n\n🔗 [رابط التقديم]({link})"
     payload = {"chat_id": CHAT_ID, "text": message, "parse_mode": "Markdown"}
-    try:
-        requests.post(url, data=payload)
-    except Exception as e:
-        print(f"❌ خطأ في الإرسال: {e}")
+    requests.post(url, data=payload)
 
-last_job_id = None
-print("🚀 القناص بدأ المراقبة الآن.. سأخبرك فور ظهور وظيفة جديدة.")
+# قراءة آخر ID
+last_sent_id = ""
+if os.path.exists(LAST_JOB_FILE):
+    with open(LAST_JOB_FILE, "r") as f:
+        last_sent_id = f.read().strip()
 
-while True:
-    try:
-        feed = feedparser.parse(RSS_URL)
-        if feed.entries:
-            latest_job = feed.entries[0]
-            # التأكد من أن الوظيفة جديدة ولم نرسلها من قبل
-            if latest_job.id != last_job_id:
-                send_to_telegram(latest_job.title, latest_job.link, latest_job.description)
-                last_job_id = latest_job.id
-                print(f"✅ أرسلت لك وظيفة جديدة: {latest_job.title}")
-    except Exception as e:
-        print(f"⚠️ تنبيه: {e}")
-   
-    # يفحص كل دقيقة واحدة (60 ثانية)
-    time.sleep(60) 
+# فحص الوظائف
+feed = feedparser.parse(RSS_URL)
+if feed.entries:
+    latest_job = feed.entries[0]
+    
+    if latest_job.id != last_sent_id:
+        send_to_telegram(latest_job.title, latest_job.link)
+        # حفظ المعرف الجديد
+        with open(LAST_JOB_FILE, "w") as f:
+            f.write(latest_job.id)
+        print(f"✅ أرسلت لك وظيفة جديدة: {latest_job.title}")
+    else:
+        print("😴 لا توجد وظائف جديدة.")
